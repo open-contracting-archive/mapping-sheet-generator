@@ -1,1453 +1,1093 @@
 {
     "id": "http://standard.open-contracting.org/schema/1__0__1/release-schema.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "title": "Esquema para una Entrega de Contratación Abierta",
+    "title": "Schema for an Open Contracting Release",
     "type": "object",
     "properties": {
         "ocid": {
             "title": "Open Contracting ID",
-            "description": "Un identificador globalmente único para este Proceso de Contratación Abierta. Compuesto de un prefijo de publicador y un identificador para el proceso de contratación. Para más información ver la [Guía de Identificador de Contratación Abierta](http://standard.open-contracting.org/latest/en/schema/identifiers/)",
+            "description": "A globally unique identifier for this Open Contracting Process. Composed of a publisher prefix and an identifier for the contracting process. For more information see the [Open Contracting Identifier guidance](http://standard.open-contracting.org/latest/en/schema/identifiers/)",
             "type": "string",
             "mergeStrategy": "ocdsOmit"
         },
         "id": {
-            "title": "ID de Entrega",
-            "description": "Un identificador único que identifica esta entrega. Un ID de entrega debe de ser único dentro de un paquete de entrega y no debe de contener el signo #.",
+            "title": "Release ID",
+            "description": "A unique identifier that identifies this release. A release ID must be unique within a release-package and must not contain the # character.",
             "type": "string",
             "mergeStrategy": "ocdsOmit"
         },
         "date": {
-            "title": "Fecha de Entrega",
-            "description": "La fecha en que se hace disponible esta información, puede ser la misma que la publishedDate, no debe de ser posterior a la publishedDate del paquete original. Se usa para determinar el orden de fusión.",
+            "title": "Release Date",
+            "description": "The date this information is released, it may well be the same as the parent publishedDate, it must not be later than the publishedDate from the parent package. It is used to determine merge order.",
             "type": "string",
             "format": "date-time",
             "mergeStrategy": "ocdsOmit"
         },
         "tag": {
-            "title": "Etiqueta de lanzamiento",
-            "description": "Un valor de la [lista de códigos de Etiqueta de Lanzamiento](http://standard.open-contracting.org/latest/en/schema/codelists/#release-tag) que identifica la naturaleza de la entrega. Las etiquetas se pueden usar para filtrar entregas o, en el futuro, para una validación avanzada cuando ciertos tipos de entregas deban contener ciertos campos.",
+            "title": "Release Tag",
+            "description": "A value from the [releaseTag codelist](http://standard.open-contracting.org/latest/en/schema/codelists/#release-tag) that identifies the nature of the release being made. Tags may be used to filter release, or, in future, for advanced validation when certain kinds of releases should contain certain fields.",
             "type": "array",
             "items": {
                 "type": "string",
-                "enum": [
-                    "planning",
-                    "tender",
-                    "tenderAmendment",
-                    "tenderUpdate",
-                    "tenderCancellation",
-                    "award",
-                    "awardUpdate",
-                    "awardCancellation",
-                    "contract",
-                    "contractUpdate",
-                    "contractAmendment",
-                    "implementation",
-                    "implementationUpdate",
-                    "contractTermination",
-                    "compiled"
-                ]
+                "enum": ["planning", "tender", "tenderAmendment", "tenderUpdate", "tenderCancellation", "award", "awardUpdate", "awardCancellation", "contract", "contractUpdate", "contractAmendment", "implementation", "implementationUpdate", "contractTermination", "compiled"]
             },
             "mergeStrategy": "ocdsOmit"
         },
         "initiationType": {
-            "title": "Tipo de inicio",
-            "description": "Cadena de caracteres que especifica el tipo de proceso de inicio usado para este contrato, tomado de la lista de códigos de [Tipo de Inicio](http://standard.open-contracting.org/latest/en/schema/codelists/#initiation-type). Actualmente sólo es compatible con licitación.",
+            "title": "Initiation type",
+            "description": "String specifying the type of initiation process used for this contract, taken from the [initiationType](http://standard.open-contracting.org/latest/en/schema/codelists/#initiation-type) codelist. Currently only tender is supported.",
             "type": "string",
-            "enum": [
-                "tender"
-            ],
+            "enum": ["tender"],
             "mergeStrategy": "ocdsVersion"
         },
-        "planning": {
-            "title": "Planeación",
-            "description": "Información desde la fase de contratación del proceso de contratación. Esto incluye información relacionada con el proceso de decisión sobre qué, cuándo y cómo contratar.",
+        "planning": { 
+            "title": "Planning",
+            "description": "Information from the planning phase of the contracting process. This includes information related to the process of deciding what to contract for, when and how.",
             "$ref": "#/definitions/Planning"
         },
         "tender": {
-            "title": "Licitación",
-            "description": "Las actividades llevadas a cabo para poder entrar a un contrato.",
+            "title": "Tender",
+            "description": "The activities undertaken in order to enter into a contract.",
             "$ref": "#/definitions/Tender"
         },
         "buyer": {
-            "title": "Comprador",
-            "description": "El comprador es la entidad cuyo presupuesto se usará para adquirir los bienes. Esto puede ser distinto de la agencia contratante que puede estar especificada en los datos de licitación.",
+            "title": "Buyer",
+            "description": "The buyer is the entity whose budget will be used to purchase the goods. This may be different from the procuring agency who may be specified in the tender data.",
             "$ref": "#/definitions/Organization"
         },
-        "awards": {
-            "title": "Adjudicaciones",
-            "description": "Información de la fase de adjudicación del proceso de contratación. Puede haber más de una adjudicación por proceso de contratación p.ej. porque el contrato está dividido entre distintos proveedores o porque es una oferta en pie.",
+        "awards": { 
+            "title": "Awards",
+            "description": "Information from the award phase of the contracting process. There may be more than one award per contracting process e.g. because the contract is split amongst different providers, or because it is a standing offer.",
             "type": "array",
             "mergeStrategy": "arrayMergeById",
-            "mergeOptions": {
-                "idRef": "id"
-            },
-            "items": {
-                "$ref": "#/definitions/Award"
-            },
+            "mergeOptions": {"idRef": "id"},
+            "items": { "$ref": "#/definitions/Award" },
             "uniqueItems": true
         },
-        "contracts": {
-            "title": "Contratos",
-            "description": "Información de la fase de creación del contrato en el proceso de adquisición.",
+        "contracts": { 
+            "title": "Contracts",
+            "description": "Information from the contract creation phase of the procurement process.",
             "type": "array",
             "mergeStrategy": "arrayMergeById",
-            "mergeOptions": {
-                "idRef": "id"
-            },
-            "items": {
-                "$ref": "#/definitions/Contract"
-            },
+            "mergeOptions": {"idRef": "id"},
+            "items": {"$ref": "#/definitions/Contract" },
             "uniqueItems": true
         },
         "language": {
-            "title": "Idioma de la entrega",
-            "description": "Especifica el lenguaje estándar de los datos usando ya sea usando el ISO 649-1 de dos dígitos o las etiquetas de lenguaje BCP47 extendidas. Se recomienda ampliamente el uso de los códigos ISO 639-1.",
-            "type": [
-                "string",
-                "null"
-            ],
+            "title": "Release language",
+            "description": "Specifies the default language of the data using either two-digit ISO 639-1, or extended BCP47 language tags. The use of two-letter codes from ISO 639-1 is strongly recommended.",
+            "type": ["string", "null"],
             "default": "en",
             "mergeStrategy": "ocdsVersion"
         }
     },
-    "required": [
-        "ocid",
-        "id",
-        "date",
-        "tag",
-        "initiationType"
-    ],
+    "required": ["ocid", "id", "date", "tag", "initiationType"],
     "definitions": {
         "Planning": {
-            "title": "Planeación",
-            "description": "Información desde la fase de planeación del proceso de contratación. Nótese de que otros campos pueden llenarse en una entrega de planeación, en los campos apropiados en otras secciones del esquema, probablemente serán estimaciones en esta etapa. p.ej. totalValue en licitación.",
+            "title": "Planning",
+            "description": "Information from the planning phase of the contracting process. Note that many other fields may be filled in a planning release, in the appropriate fields in other schema sections, these would likely be estimates at this stage e.g. totalValue in tender",
             "type": "object",
             "properties": {
-                "budget": {
-                    "$ref": "#/definitions/Budget"
-                },
+                "budget": { "$ref": "#/definitions/Budget" },
                 "rationale": {
-                    "description": "La razón para la adquisición provista en texto libre. Más detalle se puede proveer en un documento adjunto",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title":"Rationale",
+                    "description": "The rationale for the procurement provided in free text. More detail can be provided in an attached document.",
+                    "type": ["string", "null"],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "documents": {
-                    "description": "Una lista de documentos relacionados con el proceso de planeación.",
+                    "title":"Documents",
+                    "description": "A list of documents related to the planning process.",
                     "type": "array",
                     "mergeStrategy": "arrayMergeById",
-                    "mergeOptions": {
-                        "idRef": "id"
-                    },
-                    "items": {
-                        "$ref": "#/definitions/Document"
-                    }
+                    "mergeOptions": { "idRef": "id" },
+                    "items": { "$ref": "#/definitions/Document" }
                 }
             },
             "patternProperties": {
                 "^(rationale_(((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+)))$": {
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "type": ["string", "null"]
                 }
             }
         },
         "Tender": {
-            "title": "Licitación",
-            "description": "Datos sobre el proceso de licitación - invitación pública de posibles contratistas que enviarán propuestas para evaluación y seleccionar a un ganador o ganadores.",
+            "title": "Tender",
+            "description": "Data regarding tender process - publicly inviting prospective contractors to submit bids for evaluation and selecting a winner or winners.",
             "type": "object",
-            "required": [
-                "id"
-            ],
+            "required": ["id"],
             "properties": {
                 "id": {
-                    "title": "ID de licitación",
-                    "description": "Un identificador para este proceso de licitación. Este puede ser el mismo que el ocid o puede tomarse de un identificador retenido internamente para esta licitación. ",
-                    "type": [
-                        "string",
-                        "integer"
-                    ],
+                    "title": "Tender ID",
+                    "description": "An identifier for this tender process. This may be the same as the ocid, or may be drawn from an internally held identifier for this tender.",
+                    "type": ["string", "integer"],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "title": {
-                    "description": "Título de la licitación",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title":"Tender Title",
+                    "description": "Tender title",
+                    "type": ["string", "null"],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "description": {
-                    "description": "Descripción de la licitación",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title":"Tender description",
+                    "description": "Tender description",
+                    "type": ["string", "null"],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "status": {
-                    "title": "Estatus de la Licitación",
-                    "description": "El estatus actual de la licitación basado en la [lista de códigos de Estatus de la licitación](http://standard.open-contracting.org/latest/en/schema/codelists/#tender-status)",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "enum": [
-                        "planned",
-                        "active",
-                        "cancelled",
-                        "unsuccessful",
-                        "complete",
-                        null
-                    ],
+                    "title": "Tender status",
+                    "description": "The current status of the tender based on the [tenderStatus codelist](http://standard.open-contracting.org/latest/en/schema/codelists/#tender-status)",
+                    "type": ["string", "null"],
+                    "enum": ["planned", "active", "cancelled", "unsuccessful", "complete", null],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "items": {
-                    "title": "Artículos que se adquirirán",
-                    "description": "Los bienes y servicios que se comprarán, divididos en artículos enlistados cuando sea posible. Los artículos no deben de duplicarse, en su lugar se debe especificar una cantidad de 2. ",
+                    "title": "Items to be procured",
+                    "description": "The goods and services to be purchased, broken into line items wherever possible. Items should not be duplicated, but a quantity of 2 specified instead.",
                     "type": "array",
                     "mergeStrategy": "arrayMergeById",
-                    "mergeOptions": {
-                        "idRef": "id"
-                    },
-                    "items": {
-                        "$ref": "#/definitions/Item"
-                    },
+                    "mergeOptions": { "idRef": "id" },
+                    "items": { "$ref": "#/definitions/Item" },
                     "uniqueItems": true
                 },
                 "minValue": {
-                    "description": "El valor mínimo estimado de la adquisición.",
+                    "title":"Minimum value",
+                    "description": "The minimum estimated value of the procurement.",
                     "$ref": "#/definitions/Value"
                 },
                 "value": {
-                    "description": "El valor más alto total estimado de la adquisición.",
+                    "title":"Value",
+                    "description": "The total upper estimated value of the procurement.",
                     "$ref": "#/definitions/Value"
                 },
                 "procurementMethod": {
-                    "description": "Especifica el método de licitación contra la [lista de códigos](http://standard.open-contracting.org/latest/en/schema/codelists/#method) según las [definiciones de la GPA](http://www.wto.org/english/docs_e/legal_e/rev-gpr-94_01_e.htm) de Abierta, Selectiva y Limitada",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "enum": [
-                        "open",
-                        "selective",
-                        "limited",
-                        null
-                    ],
+                    "title":"Procurement method",
+                    "description": "Specify tendering method against the [method codelist](http://standard.open-contracting.org/latest/en/schema/codelists/#method) as per [GPA definitions](http://www.wto.org/english/docs_e/legal_e/rev-gpr-94_01_e.htm) of Open, Selective, Limited",
+                    "type": ["string", "null"],
+                    "enum": ["open", "selective", "limited", null],
+                    "mergeStrategy": "ocdsVersion"
+                },
+                "procurementMethodDetails": {
+                    "title":"Procurement method details",
+                    "description": "Additional detail on the procurement method used. This field may be used to provide the local name of the particular procurement method used.",
+                    "type": ["string", "null"],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "procurementMethodRationale": {
-                    "description": "Razones para el método, especialmente en el caso de Licitación limitada.",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title":"Procurement method rationale",
+                    "description": "Rationale of procurement method, especially in the case of Limited tendering.",
+                    "type": ["string", "null"],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "awardCriteria": {
-                    "description": "Especifica los criterios de adjudicación para la adquisición, usando la [lista de códigos de adjudicación](http://standard.open-contracting.org/latest/en/schema/codelists/#award-criteria)",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title":"Award criteria",
+                    "description": "Specify the award criteria for the procurement, using the [award criteria codelist](http://standard.open-contracting.org/latest/en/schema/codelists/#award-criteria)",
+                    "type": ["string", "null"],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "awardCriteriaDetails": {
-                    "description": "Cualquier detalle o información adicional sobre la adjudicación o criterios de selección.",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title":"Award criteria details",
+                    "description": "Any detailed or further information on the award or selection criteria.",
+                    "type": ["string", "null"],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "submissionMethod": {
-                    "description": "Especifica el método por el cual deben de presentarse las propuestas, en persona, escritas o subasta en línea. Usando la [lista de códigos de método de presentación](http://standard.open-contracting.org/latest/en/schema/codelists/#submission-method)",
-                    "type": [
-                        "array",
-                        "null"
-                    ],
+                    "title":"Submission method",
+                    "description": "Specify the method by which bids must be submitted, in person, written, or electronic auction. Using the [submission method codelist](http://standard.open-contracting.org/latest/en/schema/codelists/#submission-method)",
+                    "type": ["array", "null"],
                     "items": {
                         "type": "string"
                     },
                     "mergeStrategy": "ocdsVersion"
                 },
-                "submissionMethodDetails": {
-                    "description": "Cualquier detalle o información adicional sobre el método de presentación. Esto puede incluir la dirección, dirección de correo o servicio en línea en la cual se debe de enviar la propuesta y cualquier requerimiento especial a seguir para entregar propuestas.",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                "submissionMethodDetails" : {
+                    "title":"Submission method details",
+                    "description": "Any detailed or further information on the submission method. This may include the address, e-mail address or online service to which bids should be submitted, and any special requirements to be followed for submissions.",
+                    "type": ["string", "null"],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "tenderPeriod": {
-                    "description": "El periodo cuando se abre la licitación para propuestas. La fecha de final es la fecha de cierre para las propuestas.",
+                    "title":"Tender period",
+                    "description": "The period when the tender is open for submissions. The end date is the closing date for tender submissions.",
                     "$ref": "#/definitions/Period"
                 },
                 "enquiryPeriod": {
-                    "description": "El periodo durante el cuál se pueden hacer preguntas y se contestarán.",
+                    "title":"Enquiry period",
+                    "description": "The period during which enquiries may be made and answered.",
                     "$ref": "#/definitions/Period"
                 },
                 "hasEnquiries": {
-                    "description": "Un campo Sí/ No que indica si las solicitudes de información fueron parte del proceso de licitación.",
-                    "type": [
-                        "boolean",
-                        "null"
-                    ],
+                    "title":"Has enquiries?",
+                    "description": "A Yes/No field to indicate whether enquiries were part of tender process.",
+                    "type": ["boolean", "null"],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "eligibilityCriteria": {
-                    "description": "Una descripción de los criterios de elegibilidad para proveedores potenciales.",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title":"Eligibility criteria",
+                    "description": "A description of any eligibility criteria for potential suppliers.",
+                    "type": ["string", "null"],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "awardPeriod": {
-                    "description": "La fecha o periodo en el cual se anticipa que se hará la adjudicación.",
+                    "title":"Award period",
+                    "description": "The date or period on which an award is anticipated to be made.",
                     "$ref": "#/definitions/Period"
                 },
                 "numberOfTenderers": {
-                    "definition": "The number of entities who submit a tender.",
-                    "type": [
-                        "integer",
-                        "null"
-                    ],
+                    "title":"Number of tenderers",
+                    "description": "The number of entities who submit a tender.",
+                    "type": ["integer", "null"],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "tenderers": {
-                    "description": "Todas las entidades que presentan una propuesta.",
+                    "title":"Tenderers",
+                    "description": "All entities who submit a tender.",
                     "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/Organization"
-                    },
+                    "items": { "$ref": "#/definitions/Organization" },
                     "uniqueItems": true,
                     "mergeStrategy": "ocdsVersion"
                 },
                 "procuringEntity": {
-                    "description": "La entidad gestionando la adquisición, que puede ser distinta del comprador que paga/usa los artículos adquiridos.",
+                    "title":"Procuring entity",
+                    "description": "The entity managing the procurement, which may be different from the buyer who is paying / using the items being procured.",
                     "$ref": "#/definitions/Organization"
                 },
                 "documents": {
-                    "description": "Todos los documentos y adjuntos relacionados con la licitación, incluyendo cualquier aviso. Ver la [lista de códigos de Tipo de Documento](http://standard.open-contracting.org/latest/en/schema/codelists/#document-type) para tener detalles sobre documentos potenciales a incluir.",
+                    "title":"Documents",
+                    "description": "All documents and attachments related to the tender, including any notices. See the [documentType codelist](http://standard.open-contracting.org/latest/en/schema/codelists/#document-type) for details of potential documents to include.",
                     "type": "array",
                     "mergeStrategy": "arrayMergeById",
-                    "mergeOptions": {
-                        "idRef": "id"
-                    },
-                    "items": {
-                        "$ref": "#/definitions/Document"
-                    }
+                    "mergeOptions": { "idRef": "id" },
+                    "items": { "$ref": "#/definitions/Document" }
                 },
                 "milestones": {
-                    "description": "Una lista de hitos asociados con la licitación.",
+                    "title":"Milestones",
+                    "description": "A list of milestones associated with the tender.",
                     "type": "array",
                     "mergeStrategy": "arrayMergeById",
-                    "mergeOptions": {
-                        "idRef": "id"
-                    },
-                    "items": {
-                        "$ref": "#/definitions/Milestone"
-                    }
+                    "mergeOptions": { "idRef": "id" },
+                    "items": { "$ref": "#/definitions/Milestone" }
                 },
-                "amendment": {
-                    "$ref": "#/definitions/Amendment"
-                }
+                "amendment": { "$ref": "#/definitions/Amendment" }
             },
             "patternProperties": {
                 "^(title_(((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+)))$": {
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "type": ["string", "null"]
                 },
                 "^(description_(((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+)))$": {
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "type": ["string", "null"]
                 },
                 "^(procurementMethodRationale_(((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+)))$": {
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "type": ["string", "null"]
                 },
                 "^(awardCriteriaDetails_(((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+)))$": {
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "type": ["string", "null"]
                 },
                 "^(submissionMethodDetails_(((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+)))$": {
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "type": ["string", "null"]
                 },
                 "^(eligibilityCriteria_(((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+)))$": {
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "type": ["string", "null"]
                 }
             }
         },
         "Award": {
-            "title": "Adjudicación",
-            "description": "Una adjudicación para dada adquisición. Puede haber más de una adjudicación por proceso de contratación p. ej. porque el contrato está dividido entre distintos proveedores o porque es una oferta en pie.",
+            "title": "Award",
+            "description": "An award for the given procurement. There may be more than one award per contracting process e.g. because the contract is split amongst different providers, or because it is a standing offer.",
             "type": "object",
-            "required": [
-                "id"
-            ],
+            "required": ["id"],
             "properties": {
                 "id": {
-                    "title": "ID de Adjudicación",
-                    "description": "El identificador para esta adjudicación. Debe de ser único y no puede cambiar dentro del Proceso de Contrtación Abierta del que es parte (es definido por un sólo ocid). Ver la [guía de identificadores](http://standard.open-contracting.org/latest/en/schema/identifiers/) para más detalles.",
-                    "type": [
-                        "string",
-                        "integer"
-                    ],
+                    "title": "Award ID",
+                    "description": "The identifier for this award. It must be unique and cannot change within the Open Contracting Process it is part of (defined by a single ocid). See the [identifier guidance](http://standard.open-contracting.org/latest/en/schema/identifiers/) for further details.",
+                    "type": ["string", "integer"],
                     "mergeStrategy": "overwrite"
                 },
                 "title": {
-                    "description": "Título de la adjudicación",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title":"Title",
+                    "description": "Award title",
+                    "type": ["string", "null"],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "description": {
-                    "description": "Descripción de la adjudicación",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title":"Description",
+                    "description": "Award description",
+                    "type": ["string", "null"],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "status": {
-                    "title": "Estatus de la Adjudicación",
-                    "description": "El estatus actual de la adjudicación tomado de la [lista de códigos de Estatus de Adjudicación](http://standard.open-contracting.org/latest/en/schema/codelists/#award-status)",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "enum": [
-                        "pending",
-                        "active",
-                        "cancelled",
-                        "unsuccessful",
-                        null
-                    ],
+                    "title": "Award status",
+                    "description": "The current status of the award drawn from the [awardStatus codelist](http://standard.open-contracting.org/latest/en/schema/codelists/#award-status)",
+                    "type": ["string", "null"],
+                    "enum": ["pending", "active", "cancelled", "unsuccessful", null],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "date": {
-                    "title": "Fecha de adjudicación",
-                    "description": "La fecha de la adjudicación del contrato. Usualmente es la fecha en que se tomó la decisión de adjudicar.",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title": "Award date",
+                    "description": "The date of the contract award. This is usually the date on which a decision to award was made.",
+                    "type": ["string", "null"],
                     "format": "date-time",
                     "mergeStrategy": "ocdsVersion"
                 },
                 "value": {
-                    "description": "El valor total de esta adjudicación. En el caso de un contrato marco este puede ser el valor total estimado o valor máximo del acuerdo. Puede haber más de una adjudicación por adquisición.",
+                    "title":"Value",
+                    "description": "The total value of this award. In the case of a framework contract this may be the total estimated lifetime value, or maximum value, of the agreement. There may be more than one award per procurement.",
                     "$ref": "#/definitions/Value"
                 },
                 "suppliers": {
-                    "description": "Los proveedores ganadores. Si se ha adjudicado distintos artículos de valores, se deben de dividir en dos bloques de adjudicación separados. ",
+                    "title":"Suppliers",
+                    "description": "The suppliers awarded this award. If different suppliers have been awarded different items of values, these should be split into separate award blocks.",
                     "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/Organization"
-                    },
+                    "items": { "$ref": "#/definitions/Organization" },
                     "uniqueItems": true,
                     "mergeStrategy": "ocdsVersion"
                 },
                 "items": {
-                    "title": "Artículos Adjudicados",
-                    "description": "Los bienes y servicios adjudicados, desglosados en los artículos enlistados cuando sea posible. Los artículos no deben de estar duplicados, sino se debe especificar la cantidad.",
+                    "title": "Items awarded",
+                    "description": "The goods and services awarded in this award, broken into line items wherever possible. Items should not be duplicated, but the quantity specified instead.",
                     "type": "array",
                     "minItems": 1,
                     "mergeStrategy": "arrayMergeById",
-                    "mergeOptions": {
-                        "idRef": "id"
-                    },
-                    "items": {
-                        "$ref": "#/definitions/Item"
-                    },
+                    "mergeOptions": { "idRef": "id" },
+                    "items": { "$ref": "#/definitions/Item" },
                     "uniqueItems": true
                 },
                 "contractPeriod": {
-                    "description": "El periodo por el cual se ha adjudicado el contrato.",
+                    "title":"Contract period",
+                    "description": "The period for which the contract has been awarded.",
                     "$ref": "#/definitions/Period"
                 },
                 "documents": {
-                    "description": "Todos los documentos y archivos adjuntos relacionados con la adjudicación, incluyendo cualquier aviso.",
+                    "title":"Documents",
+                    "description": "All documents and attachments related to the award, including any notices.",
                     "type": "array",
                     "mergeStrategy": "arrayMergeById",
-                    "mergeOptions": {
-                        "idRef": "id"
-                    },
-                    "items": {
-                        "$ref": "#/definitions/Document"
-                    },
+                    "mergeOptions": { "idRef": "id" },
+                    "items": { "$ref": "#/definitions/Document" },
                     "uniqueItems": true
                 },
-                "amendment": {
+                "amendment": { 
                     "$ref": "#/definitions/Amendment"
                 }
             },
             "patternProperties": {
                 "^(title_(((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+)))$": {
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "type": ["string", "null"]
                 },
                 "^(description_(((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+)))$": {
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "type": ["string", "null"]
                 }
             }
         },
         "Contract": {
             "type": "object",
-            "title": "Contrato",
-            "description": "Información sobre el contrato firmado entre el comprador y el o los proveedores.",
-            "required": [
-                "id",
-                "awardID"
-            ],
+            "title": "Contract",
+            "description": "Information regarding the signed contract between the buyer and supplier(s).",
+            "required": ["id", "awardID"],
             "properties": {
                 "id": {
-                    "title": "ID del Contrato",
-                    "description": "El identificador para este contrato. Debe de ser único y no puede cambiar durante su Proceso de Contratación Abierta (definido por un sólo ocid). Véase la [guía de identificadores](http://standard.open-contracting.org/latest/en/schema/identifiers/) para más detalles.",
-                    "type": [
-                        "string",
-                        "integer"
-                    ],
+                    "title": "Contract ID",
+                    "description": "The identifier for this contract. It must be unique and cannot change within its Open Contracting Process (defined by a single ocid). See the [identifier guidance](http://standard.open-contracting.org/latest/en/schema/identifiers/) for further details.",
+                    "type": ["string", "integer"],
                     "mergeStrategy": "overwrite"
                 },
                 "awardID": {
-                    "title": "ID de Adjudicación",
-                    "description": "El award.id contra el cual se está expidiendo este contrato.",
-                    "type": [
-                        "string",
-                        "integer"
-                    ],
+                    "title": "Award ID",
+                    "description": "The award.id against which this contract is being issued.",
+                    "type": ["string", "integer"],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "title": {
-                    "description": "Título del contrato",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "description": "Contract title",
+                    "type": ["string", "null"],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "description": {
-                    "description": "Descripción del contrato",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title":"Contract description",
+                    "description": "Contract description",
+                    "type": ["string", "null"],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "status": {
-                    "title": "Estatus del Contrato",
-                    "description": "El estatus actual del contrato. Tomado de la [lista de códigos de contractStatus](http://standard.open-contracting.org/latest/en/schema/codelists/#contract-status)",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "enum": [
-                        "pending",
-                        "active",
-                        "cancelled",
-                        "terminated",
-                        null
-                    ],
+                    "title": "Contract status",
+                    "description": "The current status of the contract. Drawn from the [contractStatus codelist](http://standard.open-contracting.org/latest/en/schema/codelists/#contract-status)",
+                    "type": ["string", "null"],
+                    "enum": ["pending", "active", "cancelled", "terminated", null],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "period": {
-                    "description": "Las fechas de inicio y fin del contrato.",
+                    "title":"Period",
+                    "description": "The start and end date for the contract.",
                     "$ref": "#/definitions/Period"
                 },
                 "value": {
-                    "description": "El valor total de este contrato.",
+                    "title":"Value",
+                    "description": "The total value of this contract.",
                     "$ref": "#/definitions/Value"
                 },
                 "items": {
-                    "title": "Artículos Contratados",
-                    "description": "Los bienes, servicios y cualquier resultado intangible en este contrato. Nota: No repetir si los artículos son los mismos que la adjudicación.",
+                    "title": "Items contracted",
+                    "description": "The goods, services, and any intangible outcomes in this contract. Note: If the items are the same as the award do not repeat.",
                     "type": "array",
                     "minItems": 1,
                     "mergeStrategy": "arrayMergeById",
-                    "mergeOptions": {
-                        "idRef": "id"
-                    },
-                    "items": {
-                        "$ref": "#/definitions/Item"
-                    },
+                    "mergeOptions": { "idRef": "id" },
+                    "items": { "$ref": "#/definitions/Item" },
                     "uniqueItems": true
                 },
                 "dateSigned": {
-                    "description": "La fecha en que se firmó el contrato. En el caso de múltiples firmas, la fecha de la última firma. ",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title":"Date signed",
+                    "description": "The date the contract was signed. In the case of multiple signatures, the date of the last signature.",
+                    "type": ["string", "null"],
                     "format": "date-time",
                     "mergeStrategy": "ocdsVersion"
                 },
                 "documents": {
-                    "description": "Todos los documentos y archivos adjuntos relacionados con el contrato, incluyendo cualquier aviso.",
+                    "title":"Documents",
+                    "description": "All documents and attachments related to the contract, including any notices.",
                     "type": "array",
                     "mergeStrategy": "arrayMergeById",
-                    "mergeOptions": {
-                        "idRef": "id"
-                    },
-                    "items": {
-                        "$ref": "#/definitions/Document"
-                    },
+                    "mergeOptions": { "idRef": "id" },
+                    "items": { "$ref": "#/definitions/Document" },
                     "uniqueItems": true
                 },
-                "amendment": {
+                "amendment": { 
                     "$ref": "#/definitions/Amendment"
                 },
-                "implementation": {
-                    "title": "Implementación",
-                    "description": "La información relacionada con la implementación del contrato de acuerdo con las obligaciones planteadas en él.",
-                    "$ref": "#/definitions/Implementation"
+                "implementation": { 
+                    "title": "Implementation",
+                    "description": "Information related to the implementation of the contract in accordance with the obligations laid out therein.",
+                    "$ref": "#/definitions/Implementation" 
                 }
             },
             "patternProperties": {
                 "^(title_(((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+)))$": {
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "type": ["string", "null"]
                 },
                 "^(description_(((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+)))$": {
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "type": ["string", "null"]
                 }
             }
         },
         "Implementation": {
             "type": "object",
-            "title": "Implementación",
-            "description": "Información durante la etapa de realización/implementación del contrato",
+            "title": "Implementation",
+            "description": "Information during the performance / implementation stage of the contract.",
             "properties": {
                 "transactions": {
-                    "description": "Una lista de transacciones realizadas contra este contrato",
+                    "title":"Transactions",
+                    "description": "A list of the spending transactions made against this contract",
                     "type": "array",
                     "mergeStrategy": "arrayMergeById",
-                    "mergeOptions": {
-                        "idRef": "id"
-                    },
-                    "items": {
-                        "$ref": "#/definitions/Transaction"
-                    },
+                    "mergeOptions": { "idRef": "id" },
+                    "items": { "$ref": "#/definitions/Transaction" },
                     "uniqueItems": true
                 },
                 "milestones": {
-                    "description": "Conforme se cumplen hitos, se debe de documentar el término de los mismos.",
+                    "title":"Milestones",
+                    "description": "As milestones are completed, milestone completions should be documented.",
                     "type": "array",
                     "mergeStrategy": "arrayMergeById",
-                    "mergeOptions": {
-                        "idRef": "id"
-                    },
-                    "items": {
-                        "$ref": "#/definitions/Milestone"
-                    },
+                    "mergeOptions": { "idRef": "id" },
+                    "items": { "$ref": "#/definitions/Milestone" },
                     "uniqueItems": true
                 },
-                "documents": {
-                    "description": "Documentos y reportes que son parte de la fase de implementación p.ej. reportes de auditoría y evaluación.",
+                "documents":{
+                    "title":"Documents",
+                    "description": "Documents and reports that are part of the implementation phase e.g. audit and evaluation reports.",
                     "type": "array",
                     "mergeStrategy": "arrayMergeById",
-                    "mergeOptions": {
-                        "idRef": "id"
-                    },
-                    "items": {
-                        "$ref": "#/definitions/Document"
-                    },
+                    "mergeOptions": { "idRef": "id" },
+                    "items": { "$ref": "#/definitions/Document" },
                     "uniqueItems": true
                 }
             }
         },
         "Milestone": {
+            "title":"Milestone",
             "type": "object",
-            "required": [
-                "id"
-            ],
+            "required": ["id"],
             "properties": {
                 "id": {
-                    "description": "Un identificador local para este hito, único dentro de este bloque. Este campo se usa para llevar registro de múltiples revisiones de un hito a través de la compilación de entrega a mecanismo de registro.",
-                    "type": [
-                        "string",
-                        "integer"
-                    ],
+                    "title":"ID",
+                    "description": "A local identifier for this milestone, unique within this block. This field is used to keep track of multiple revisions of a milestone through the compilation from release to record mechanism.",
+                    "type": ["string", "integer"],
                     "mergeStrategy": "overwrite"
                 },
                 "title": {
-                    "description": "Título del hito",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title":"Title",
+                    "description": "Milestone title",
+                    "type": ["string", "null"],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "description": {
-                    "description": "Una descripción del hito.",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title":"Description",
+                    "description": "A description of the milestone.",
+                    "type": ["string", "null"],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "dueDate": {
-                    "description": "La fecha en que se espera cumplir el hito.",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title":"Due date",
+                    "description": "The date the milestone is due.",
+                    "type": ["string", "null"],
                     "format": "date-time",
                     "mergeStrategy": "ocdsVersion"
                 },
-                "dateModified": {
-                    "description": "La fecha en que el hito fue revisado o modificado y se cambió el estatus o se confirmo que continuaba siendo correcto.",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                "dateModified" : {
+                    "title":"Date modified",
+                    "description": "The date the milestone was last reviewed or modified and the status was altered or confirmed to still be correct.",
+                    "type": ["string", "null"],
                     "format": "date-time",
                     "mergeStrategy": "ocdsVersion"
                 },
                 "status": {
-                    "description": "El estatus que fue alacanzado en la fecha dad en dateModified, tomada de la [lista de códigos de Estatus de Hitos](http://standard.open-contracting.org/latest/en/schema/codelists/#milestone-status).",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "enum": [
-                        "met",
-                        "notMet",
-                        "partiallyMet",
-                        null
-                    ],
+                    "title":"Status",
+                    "description": "The status that was realized on the date provided in dateModified, drawn from the [milestoneStatus codelist](http://standard.open-contracting.org/latest/en/schema/codelists/#milestone-status).",
+                    "type": ["string", "null"],
+                    "enum": ["met", "notMet", "partiallyMet", null],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "documents": {
-                    "description": "Lista de documentos asociados con este hito.",
+                    "title":"Documents",
+                    "description": "List of documents associated with this milestone.",
                     "type": "array",
                     "mergeStrategy": "arrayMergeById",
-                    "mergeOptions": {
-                        "idRef": "id"
-                    },
-                    "items": {
-                        "$ref": "#/definitions/Document"
-                    },
+                    "mergeOptions": { "idRef": "id" },
+                    "items": { "$ref": "#/definitions/Document" },
                     "uniqueItems": true
                 }
             },
             "patternProperties": {
                 "^(title_(((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+)))$": {
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "type": ["string", "null"]
                 },
                 "^(description_(((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+)))$": {
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "type": ["string", "null"]
                 }
             }
         },
         "Document": {
             "type": "object",
-            "title": "Documento",
-            "description": "Se pueden adjuntar enlaces o descripciones de documentos externos en distintas ubicaciones dentro del estándar. Documentos que respalden la información, avisos formales, formas descargables o cualquier otro tipo de recurso que debería de hacerse pública como parte de la contratación abierta completa.",
-            "required": [
-                "id"
-            ],
+            "title": "Document",
+            "description": "Links to, or descriptions of, external documents can be attached at various locations within the standard. Documents may be supporting information, formal notices, downloadable forms, or any other kind of resource that should be made public as part of full open contracting.",
+            "required": ["id"],
             "properties": {
                 "id": {
-                    "description": "Un identificador local único para este documento. Este campo se usa para llevar un registro de revisiones múltiples de un documento a lo largo de la compilación de entrega a mecanismo de registro.",
-                    "type": [
-                        "string",
-                        "integer"
-                    ],
+                    "title":"ID",
+                    "description": "A local, unique identifier for this document. This field is used to keep track of multiple revisions of a document through the compilation from release to record mechanism.",
+                    "type": ["string", "integer"],
                     "mergeStrategy": "overwrite"
                 },
                 "documentType": {
-                    "description": "Una clasificación del documento descrito tomada de la [lista de códigos documentType](http://standard.open-contracting.org/latest/en/schema/codelists/#document-type). Los valores de la lista de códigos provista debe de usarse cuando sea posible, aunque se pueden proveer valores extendidos si la lista de códigos no tiene un código relevante.",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title":"Document type",
+                    "description": "A classification of the document described taken from the [documentType codelist](http://standard.open-contracting.org/latest/en/schema/codelists/#document-type). Values from the provided codelist should be used wherever possible, though extended values can be provided if the codelist does not have a relevant code.",
+                    "type": ["string", "null"],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "title": {
-                    "description": "El título del documento.",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title":"Title",
+                    "description": "The document title.",
+                    "type": ["string", "null"],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "description": {
-                    "description": "Una breve descripción del documento. Recomendamos descripciones que no excedan las 250 palabras. En el caso de que el documento no esté disponible en línea, el campo de descripción se puede usar para describir los arreglos para obtener una copia del documento.",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title":"Description",
+                    "description": "A short description of the document. We recommend descriptions do not exceed 250 words. In the event the document is not accessible online, the description field can be used to describe arrangements for obtaining a copy of the document.",
+                    "type": ["string", "null"],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "url": {
-                    "description": "enlace directo al documento o archivo adjunto. El servidor que da acceso a este documento debe estar configurado para reportar correctamente el tipo de mime del documento.",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title":"URL",
+                    "description": " direct link to the document or attachment. The server providing access to this document should be configured to correctly report the document mime type.",
+                    "type": ["string", "null"],
                     "format": "uri",
                     "mergeStrategy": "ocdsVersion"
                 },
                 "datePublished": {
-                    "description": "La fecha en la que se publicó por primera vez el documento. Esto es particularmente importante para documentos legalmente importantes, tales como avisos de una licitación.",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title":"Date published",
+                    "description": "The date on which the document was first published. This is particularly important for legally important documents such as notices of a tender.",
+                    "type": ["string", "null"],
                     "format": "date-time",
                     "mergeStrategy": "ocdsVersion"
                 },
                 "dateModified": {
-                    "description": "Fecha en que se el documento se modificó por última vez",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title":"Date modified",
+                    "description": "Date that the document was last modified",
+                    "type": ["string", "null"],
                     "format": "date-time",
                     "mergeStrategy": "ocdsVersion"
                 },
                 "format": {
-                    "description": "El formato del documento tomado de la [ lista de códigos IANA Media Types](http://www.iana.org/assignments/media-types/), con la adición de un valor extra para 'offline/print', utilizado cuando esta entrada de documento se use para describir la publicación offline de un documento. Usar valores de la columna plantilla. Los enlaces a páginas web debe de etiquetarse como 'text/html'.",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title":"Format",
+                    "description": "The format of the document taken from the [IANA Media Types code list](http://www.iana.org/assignments/media-types/), with the addition of one extra value for 'offline/print', used when this document entry is being used to describe the offline publication of a document. Use values from the template column. Links to web pages should be tagged 'text/html'.",
+                    "type": ["string", "null"],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "language": {
-                    "description": "Especifica el lenguaje del documento enlistado utilizando ya sea el código [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) o las [etiquetas de lenguaje BCP47](http://www.w3.org/International/articles/language-tags/) extendidas. Se recomienda ampliamente el uso de códigos de dos letras del [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) a menos que haya una necesidad clara del usuario para distinguir el subtipo de lenguaje.",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title":"Language",
+                    "description": "Specifies the language of the linked document using either two-digit [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes), or extended [BCP47 language tags](http://www.w3.org/International/articles/language-tags/). The use of two-letter codes from [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) is strongly recommended unless there is a clear user need for distinguishing the language subtype.",
+                    "type": ["string", "null"],
                     "mergeStrategy": "ocdsVersion"
                 }
             },
             "patternProperties": {
                 "^(title_(((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+)))$": {
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "type": ["string", "null"]
                 },
                 "^(description_(((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+)))$": {
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "type": ["string", "null"]
                 }
             }
         },
         "Budget": {
             "type": "object",
-            "title": "Información de Presupuesto",
-            "description": "Esta sección contiene información sobre la línea presupuestaria y proyectos asociados a través de los cuales se financia este proceso de contratación. Toma el modelo de datos del [Paquete de Datos de Presupuesto](https://github.com/openspending/budget-data-package/blob/master/specification.md) y debe usarse para cruzar los datos con información más detallada usando un Paquete de Datos de Presupuesto o , cuando éste no esté disponible, proveer suficiente información para permitir a un usuario cruzar automática o manualmente con otra fuente información de presupuestos y proyecto.",
+            "title": "Budget information",
+            "description": "This section contain information about the budget line, and associated projects, through which this contracting process is funded. It draws upon data model of the [Fiscal Data Package](http://fiscal.dataprotocols.org/), and should be used to cross-reference to more detailed information held using a Budget Data Package, or, where no linked Budget Data Package is available, to provide enough information to allow a user to manually or automatically cross-reference with another published source of budget and project information.",
             "properties": {
                 "source": {
-                    "title": "Fuente de los Datos",
-                    "description": "Usado para apuntar a un Paquete de Datos de Presupeusto, o una fuente legible por computadora o por un humano donde los usuarios puedan obtener más información sobre los identificadores de artículos presupuestadoso identificadores de proyectos, provistos aquí. ",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title": "Data Source",
+                    "description": "Used to point either to a corresponding Budget Data Package, or to a machine or human-readable source where users can find further information on the budget line item identifiers, or project identifiers, provided here.",
+                    "type":["string", "null"],
                     "mergeStrategy": "ocdsVersion",
                     "format": "uri"
                 },
-                "id": {
-                    "description": "Un identificador para la partida presupuestaria que provee fondos para este proceso de contratación. Este identificador debe de poder hacer una referencia cruzada contra la fuente de datos .",
+                "id":{ 
+                    "title":"ID",
+                    "description": "An identifier for the budget line item which provides funds for this contracting process. This identifier should be possible to cross-reference against the provided data source.",
                     "mergeStrategy": "ocdsVersion",
-                    "type": [
-                        "string",
-                        "integer",
-                        "null"
-                    ]
+                    "type":["string", "integer", "null"]
                 },
                 "description": {
-                    "title": "Fuente del Presupuesto",
-                    "description": "Un texto descriptivo breve de la fuente del presupuesto. Puede usarse para proveer el título del la línea presupuestal o el programa usado para financiar este proyecto. ",
+                    "title": "Budget Source",
+                    "description": "A short free text description of the budget source. May be used to provide the title of the budget line, or the programme used to fund this project.",
                     "mergeStrategy": "ocdsVersion",
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "type": ["string", "null"]
                 },
-                "amount": {
-                    "description": "El valor de una partida presupuestaria.",
+                "amount": { 
+                    "title":"Amount",
+                    "description": "The value of the budget line item.",
                     "$ref": "#/definitions/Value"
                 },
                 "project": {
-                    "title": "Título del Proyecto",
-                    "description": "El nombre del proyecto a través del cual se financia este proceso de contratación (si aplica). Algunas organizaciones mantienen un registro de proyectos y los datos deben usar el nombre por el cual se conoce el proyecto en ese registro. No se ofrece una opción de traducción para esta cadena de caracteres, ya que los valores traducidos pueden proveerse en datos de un tercero, enlazados desde la fuente de datos.",
+                    "title": "Project title",
+                    "description": "The name of the project that through which this contracting process is funded (if applicable). Some organizations maintain a registry of projects, and the data should use the name by which the project is known in that registry. No translation option is offered for this string, as translated values can be provided in third-party data, linked from the data source above.",
                     "mergeStrategy": "ocdsVersion",
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "type": ["string", "null"]
                 },
                 "projectID": {
-                    "title": "Identificador de Proyecto",
-                    "description": "Un identificador externo para el proyecto del que forma parte este proceso de contratación o a través del cual está financiado (si aplica). Algunas organizaciones mantienen un registro de proyectos y los datos deben usar el identificador del registro de proyectos relevante. ",
+                    "title": "Project identifier",
+                    "description": "An external identifier for the project that this contracting process forms part of, or is funded via (if applicable). Some organizations maintain a registry of projects, and the data should use the identifier from the relevant registry of projects.",
                     "mergeStrategy": "ocdsVersion",
-                    "type": [
-                        "string",
-                        "integer",
-                        "null"
-                    ]
+                    "type": ["string", "integer", "null"]
                 },
-                "uri": {
-                    "title": "Información de presupuesto vinculado",
-                    "description": "Una URI que apunte directamente a un registro legible por computadora sobre el presupuesto relacionado o proyectos para este proceso de contratación. ",
+                "uri":{
+                    "title": "Linked budget information",
+                    "description": "A URI pointing directly to a machine-readable record about the related budget or projects for this contracting process.",
                     "mergeStrategy": "ocdsVersion",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "format": "uri"
                 }
             },
             "patternProperties": {
                 "^(source_(((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+)))$": {
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "type": ["string", "null"]
                 },
                 "^(description_(((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+)))$": {
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "type": ["string", "null"]
                 },
                 "^(project_(((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+)))$": {
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "type": ["string", "null"]
                 }
             }
         },
         "Transaction": {
             "type": "object",
-            "title": "Información de Transacción",
-            "description": "Una transacción relacionada con el proceso de contratación. Utiliza los modelos de datos del [Paquete de Datos de Presupuesto](https://github.com/openspending/budget-data-package/blob/master/specification.md) y de la [International Aid Transparency Initiative](http://iatistandard.org/activity-standard/iati-activities/iati-activity/transaction/) y debe usarse para cruzar los datos para obtener información más detallada usando un Budget Data Package, archivo IATI o proveer suficiente información para permitir a un usuario cruzar información manual o automáticamente con otra fuente publicada de datos de transacciones.",
-            "required": [
-                "id"
-            ],
+            "title": "Transaction information",
+            "description": "A spending transaction related to the contracting process. Draws upon the data models of the [Fiscal Data Package](http://fiscal.dataprotocols.org/) and the [International Aid Transpareny Initiative](http://iatistandard.org/activity-standard/iati-activities/iati-activity/transaction/) and should be used to cross-reference to more detailed information held using a Budget Data Package, IATI file, or to provide enough information to allow a user to manually or automatically cross-reference with some other published source of transactional spending data.",
+            "required": ["id"],
             "properties": {
-                "id": {
-                    "description": "Un identificador único para esta transacción. Debería de ser posible hacer una referencia cruzada de este identificador con la fuente de los datos provistos. Para el paquete de datos de presupuesto, este es el id, para IATI, la referencia de transacción. ",
-                    "type": [
-                        "string",
-                        "integer"
-                    ],
+                "id":{ 
+                    "title":"ID",
+                    "description": "A unique identifier for this transaction. This identifier should be possible to cross-reference against the provided data source. For the budget data package this is the id, for IATI, the transaction reference.",
+                    "type": ["string", "integer"],
                     "mergeStrategy": "overwrite"
                 },
                 "source": {
-                    "title": "Fuente de los Datos",
-                    "description": "Usado para apuntar a un Paquete de Datos de Presupeusto, un archivo IATI o una fuente legible por computadora o por un humano donde los usuarios puedan obtener más información sobre los identificadores de partida presupuestaria o identificadores de proyectos, provistos aquí. ",
+                    "title": "Data source",
+                    "description": "Used to point either to a corresponding Budget Data Package, IATI file, or machine or human-readable source where users can find further information on the budget line item identifiers, or project identifiers, provided here.",
                     "mergeStrategy": "ocdsVersion",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "format": "uri"
                 },
                 "date": {
-                    "description": "La fecha de la transacción",
+                    "title":"Date",
+                    "description": "The date of the transaction",
                     "mergeStrategy": "ocdsVersion",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "format": "date-time"
                 },
-                "amount": {
-                    "description": "El valor de la transacción.",
+                "amount": { 
+                    "title":"Amount",
+                    "description": "The value of the transaction.",
                     "$ref": "#/definitions/Value"
                 },
-                "providerOrganization": {
-                    "description": "El identificador de Organización para la organización de la cuál se originan los fondos en esta transacción. Expresados siguiendo el estándar de Identificador Organizacional - consulta la documentación y la lista de códigos. ",
+                "providerOrganization":{
+                    "title":"Provider organization",
+                    "description": "The Organization Identifier for the organization from which the funds in this transaction originate. Expressed following the Organizational Identifier standard - consult the documentation and the codelist.",
                     "$ref": "#/definitions/Identifier"
                 },
-                "receiverOrganization": {
-                    "description": "El Identificador de Organización para la organización que recibe los fondos en esta transacción. Expresado siguiendo el estándar de Identificador Organizacional - consulta la documentación y la lista de códigos",
+                "receiverOrganization":{
+                    "title":"Receiver organization",
+                    "description": "The Organization Identifier for the organization which receives the funds in this transaction. Expressed following the Organizational Identifier standard - consult the documentation and the codelist.",
                     "$ref": "#/definitions/Identifier"
                 },
-                "uri": {
-                    "title": "Información de gasto vinculado",
-                    "description": "Una URI apuntando directamente al registro legible en computadora sobre esta transacción. ",
+                "uri":{
+                    "title":"Linked spending information",
+                    "description":"A URI pointing directly to a machine-readable record about this spending transaction.",
                     "mergeStrategy": "ocdsVersion",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "format": "uri"
+                    "type":["string", "null"],
+                    "format":"uri"
                 }
             }
         },
         "Organization": {
-            "title": "Organización",
-            "description": "Una organización.",
+            "title": "Organization",
+            "description": "An organization.",
             "type": "object",
             "properties": {
-                "identifier": {
-                    "description": "El identificador primario para esta organización. Se prefieren identificadores que describen una identidad legal. Consulta la [guía de identificador de organización](http://standard.open-contracting.org/latest/en/schema/identifiers/) para el esquema predilecto y el identificador que se debe usar.",
-                    "$ref": "#/definitions/Identifier"
+                "identifier": { 
+                    "title":"Primary identifier",
+                    "description": "The primary identifier for this organization. Identifiers that uniquely pick out a legal entity should be preferred. Consult the [organization identifier guidance](http://standard.open-contracting.org/latest/en/schema/identifiers/) for the preferred scheme and identifier to use.",
+                    "$ref": "#/definitions/Identifier" 
                 },
-                "additionalIdentifiers": {
-                    "description": "Una lista de identificadores adicionales o suplementarios para la organización, usando la [guía de identificador de organización](http://standard.open-contracting.org/latest/en/schema/identifiers/). Esto puede usarse para proveer un identificador interno para esta organización, adicional al identificador de entidad legal primario.",
+                "additionalIdentifiers": { 
+                    "title":"Additional identifiers",
+                    "description": "A list of additional / supplemental identifiers for the organization, using the [organization identifier guidance](http://standard.open-contracting.org/latest/en/schema/identifiers/). This could be used to provide an internally used identifier for this organization in addition to the primary legal entity identifier.",
                     "type": "array",
                     "mergeStrategy": "ocdsVersion",
-                    "items": {
-                        "$ref": "#/definitions/Identifier"
-                    },
+                    "items": { "$ref": "#/definitions/Identifier" },
                     "uniqueItems": true
                 },
                 "name": {
-                    "description": "El nombre común de la organización. La propiedad ID provee un espacio para el nombre formal legal y esto puede repetir el valor o proveer el nombre común por el que se conoce esta organización. Este campo también puede incluir detalles del departamento o sub-unidad involucrada en este proceso de contratación.",
+                    "title":"Common name",
+                    "description": "The common name of the organization. The ID property provides an space for the formal legal name, and so this may either repeat that value, or could provide the common name by which this organization is known. This field could also include details of the department or sub-unit involved in this contracting process.",
                     "mergeStrategy": "ocdsVersion",
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "type": ["string", "null"]
                 },
-                "address": {
-                    "$ref": "#/definitions/Address"
-                },
-                "contactPoint": {
-                    "$ref": "#/definitions/ContactPoint"
-                }
+                "address": { "$ref": "#/definitions/Address" },
+                "contactPoint": { "$ref": "#/definitions/ContactPoint" }
             },
             "patternProperties": {
                 "^(name_(((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+)))$": {
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "type": ["string", "null"]
                 }
             }
         },
         "Item": {
+            "title":"Item",
             "type": "object",
-            "description": "Un bien, servicio u obra a contratar.",
-            "required": [
-                "id"
-            ],
+            "description": "A good, service, or work to be contracted.",
+            "required": ["id"],
             "properties": {
                 "id": {
-                    "description": "Un identificador local a los cuales hacer referencia y fusionar los artículos. Debe de ser único dentro de una matriz de artículos.",
-                    "type": [
-                        "string",
-                        "integer"
-                    ],
+                    "title":"ID",
+                    "description": "A local identifier to reference and merge the items by. Must be unique within a given array of items.",
+                    "type": ["string", "integer"],
                     "mergeStrategy": "overwrite"
                 },
                 "description": {
-                    "description": "Una descripción de los bienes o servicios que se proveerán.",
+                    "title":"Description",
+                    "description": "A description of the goods, services to be provided.",
                     "mergeStrategy": "ocdsVersion",
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "type": ["string", "null"]
                 },
                 "classification": {
-                    "description": "La clasificación primaria para el artículo. Ver el [Esquema de Clasificación de Artículos](http://standard.open-contracting.org/latest/en/schema/codelists/#item-classification-scheme) para identificar listas de clasificación preferidas, incluyendo CPV y GSIN.",
+                    "title":"Classification",
+                    "description": "The primary classification for the item. See the [itemClassificationScheme](http://standard.open-contracting.org/latest/en/schema/codelists/#item-classification-scheme) to identify preferred classification lists, including CPV and GSIN.",
                     "$ref": "#/definitions/Classification"
                 },
                 "additionalClassifications": {
-                    "description": "Una matriz de clasificaciones adicionales para el artículo. Ver la lista de códigos del [Esquema de Clasificación de Artículos](http://standard.open-contracting.org/latest/en/schema/codelists/#item-classification-scheme) para conocer opciones comunes de uso en el OCDS. Esto puede usarse para rpesentar códigos de un esquema interno de clasificación.",
+                    "title":"Additional classifications",
+                    "description": "An array of additional classifications for the item. See the [itemClassificationScheme](http://standard.open-contracting.org/latest/en/schema/codelists/#item-classification-scheme) codelist for common options to use in OCDS. This may also be used to present codes from an internal classification scheme.",
                     "type": "array",
                     "mergeStrategy": "ocdsVersion",
-                    "items": {
-                        "$ref": "#/definitions/Classification"
-                    },
+                    "items": { "$ref": "#/definitions/Classification" },
                     "uniqueItems": true
                 },
                 "quantity": {
-                    "description": "El número de unidades requerido",
+                    "title":"Quantity",
+                    "description": "The number of units required",
                     "mergeStrategy": "ocdsVersion",
                     "minimum": 0,
-                    "type": [
-                        "integer",
-                        "null"
-                    ]
+                    "type": ["integer", "null"]
                 },
                 "unit": {
-                    "description": "Descripción de la unidad en que viene el bien por ejemplo: horas, kilogramos. Conformado por un nombre de unidad y el valor de una unidad.",
+                    "title":"Unit",
+                    "description": "Description of the unit which the good comes in e.g. hours, kilograms. Made up of a unit name, and the value of a single unit.",
                     "type": "object",
                     "properties": {
                         "name": {
-                            "description": "Nombre de la unidad",
+                            "title":"Name",
+                            "description": "Name of the unit",
                             "mergeStrategy": "ocdsVersion",
-                            "type": [
-                                "string",
-                                "null"
-                            ]
+                            "type": ["string", "null"]
                         },
                         "value": {
-                            "description": "El valor monetario de una unidad.",
+                            "title":"Value",
+                            "description": "The monetary value of a single unit.",
                             "$ref": "#/definitions/Value"
                         }
                     },
                     "patternProperties": {
                         "^(name_(((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+)))$": {
-                            "type": [
-                                "string",
-                                "null"
-                            ]
+                            "type": ["string", "null"]
                         }
                     }
                 }
             },
             "patternProperties": {
                 "^(description_(((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+)))$": {
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "type": ["string", "null"]
                 }
             }
         },
         "Amendment": {
+            "title":"Amendment",
             "type": "object",
-            "title": "Información de enmiendas",
+            "title": "Amendment information",
             "properties": {
                 "date": {
-                    "title": "Fecha de enmienda",
-                    "description": "Los datos de esta enmienda.",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title": "Amendment date",
+                    "description":"The data of this amendment.",
+                    "type": ["string", "null"],
                     "format": "date-time",
                     "mergeStrategy": "ocdsVersion"
                 },
                 "changes": {
-                    "title": "Campos enmendados",
-                    "description": "Lista separada por comas de los campos afectados.",
+                    "title": "Amended fields",
+                    "description": "An array change objects describing the fields changed, and their former values.",
                     "mergeStrategy": "ocdsVersion",
                     "type": "array",
                     "items": {
                         "type": "object",
                         "properties": {
                             "property": {
-                                "description": "El nombre de propiedad que ha sido cambiado con relación al lugar donde se encuentra la enmienda. Por ejemplo si el valor del contrato ha cambiado, entonces los cambios en el contract.amendment serían value.amount.",
+                                "title":"Property",
+                                "description": "The property name that has been changed relative to the place the amendment is. For example if the contract value has changed, then the property under changes within the contract.amendment would be value.amount. ",
                                 "type": "string"
                             },
                             "former_value": {
-                                "description": "El valor previo de la propiedad cambiada, en cualquiero tipo de propiedad.",
-                                "type": [
-                                    "string",
-                                    "number",
-                                    "integer",
-                                    "array",
-                                    "object",
-                                    "null"
-                                ]
+                                "title":"Former Value",
+                                "description": "The previous value of the changed property, in whatever type the property is.",
+                                "type": ["string", "number", "integer", "array", "object", "null"]
                             }
                         }
                     }
                 },
                 "rationale": {
-                    "description": "Una explicación de la enmienda.",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title":"Rationale",
+                    "description": "An explanation for the amendment.",
+                    "type": ["string", "null"],
                     "mergeStrategy": "ocdsVersion"
                 }
             },
             "patternProperties": {
                 "^(rationale_(((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+)))$": {
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "type": ["string", "null"]
                 }
             }
         },
         "Classification": {
+            "title":"Classification",
             "type": "object",
             "properties": {
                 "scheme": {
-                    "description": "Una clasificación debe tomarse de un esquema o lista de códigos existente. Este campo se usa para indicar el esquema/lista de códigos de la cual se toma la clasificación. Para clasificaciones de elementos de línea, este valor debe representar un [Esquema de Clasificación de Artículos](http://standard.open-contracting.org/latest/en/schema/codelists/#item-classification-scheme) conocido cuando sea posible.",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title":"Scheme",
+                    "description": "An classification should be drawn from an existing scheme or list of codes. This field is used to indicate the scheme/codelist from which the classification is drawn. For line item classifications, this value should represent an known [Item Classification Scheme](http://standard.open-contracting.org/latest/en/schema/codelists/#item-classification-scheme) wherever possible.",
+                    "type": ["string", "null"],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "id": {
-                    "description": "El código de clasificación tomado de un esquema seleccionado. ",
-                    "type": [
-                        "string",
-                        "integer",
-                        "null"
-                    ],
+                    "title":"ID",
+                    "description": "The classification code drawn from the selected scheme.",
+                    "type": ["string", "integer", "null"],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "description": {
-                    "description": "Una descripción textual o título para el código.",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title":"Description",
+                    "description": "A textual description or title for the code.",
+                    "type": ["string", "null"],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "uri": {
-                    "description": "Una URI que identifique el código. En caso de que no estén disponibles URIs individuales para artículos en el esquema identificador, este valor debe dejarse en blanco.",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "format": "uri",
+                    "title":"URI",
+                    "description": "A URI to identify the code. In the event individual URIs are not available for items in the identifier scheme this value should be left blank.",
+                    "type": ["string", "null"],
+                    "format" : "uri",
                     "mergeStrategy": "ocdsVersion"
                 }
             },
             "patternProperties": {
                 "^(description_(((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+)))$": {
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "type": ["string", "null"]
                 }
             }
         },
         "Identifier": {
+            "title":"Identifier",
             "type": "object",
             "properties": {
                 "scheme": {
-                    "description": "Los identificadores de organización se pueden tomar de un esquema de identificación existente. Este campo se utiliza para indicar el esquema o las listas de códigos en las que se encontrará el identificador. Este valor debe tomarse del  [Esquema de Identificación de Organización](http://standard.open-contracting.org/latest/en/schema/codelists/#organization-identifier-scheme).",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title":"Scheme",
+                    "description": "Organization identifiers be drawn from an existing identification scheme. This field is used to indicate the scheme or codelist in which the identifier will be found. This value should be drawn from the [Organization Identifier Scheme](http://standard.open-contracting.org/latest/en/schema/codelists/#organization-identifier-scheme).",
+                    "type": ["string", "null"],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "id": {
-                    "description": "El identificador de la organización en el esquema seleccionado.",
-                    "type": [
-                        "string",
-                        "integer",
-                        "null"
-                    ],
+                    "title":"ID",
+                    "description": "The identifier of the organization in the selected scheme.",
+                    "type": ["string", "integer", "null"],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "legalName": {
-                    "description": "El nombre legalmente registrado de la organización.",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title":"Legal Name",
+                    "description": "The legally registered name of the organization.",
+                    "type": ["string", "null"],
                     "mergeStrategy": "ocdsVersion"
                 },
                 "uri": {
-                    "description": "Una URI para identificar a la organización, como los producidos por [Open Corporates](http://www.opencorporates.com) o algún otro proveedor relevante de URI. Esto no es para enlistar el sitio de la organización: eso puede hacerse a tarvés del campo de url del punto de contacto de la Organización.",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "format": "uri",
+                    "title":"URI",
+                    "description": "A URI to identify the organization, such as those provided by [Open Corporates](http://www.opencorporates.com) or some other relevant URI provider. This is not for listing the website of the organization: that can be done through the url field of the Organization contact point.",
+                    "type": ["string", "null"],
+                    "format" : "uri",
                     "mergeStrategy": "ocdsVersion"
                 }
             },
             "patternProperties": {
                 "^(legalName_(((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+)))$": {
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "type": ["string", "null"]
                 }
             }
         },
         "Address": {
-            "description": "Una dirección. Esta puede ser la dirección legalmente registrada de la organización o puede ser una dirección donde se reciba correspondencia para este proceso de contratación particular.",
+            "title":"Address",
+            "description": "An address. This may be the legally registered address of the organization, or may be a correspondence address for this particular contracting process.",
             "type": "object",
             "properties": {
                 "streetAddress": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "description": "La dirección de la calle. Por ejemplo: 1600 Amphitheatre Pkwy.",
+                    "title":"Street address",
+                    "type": ["string", "null"],
+                    "description": "The street address. For example, 1600 Amphitheatre Pkwy.",
                     "mergeStrategy": "ocdsVersion"
                 },
-                "locality": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "description": "La localidad. Por ejemplo: Mountain View.",
+                "locality":{
+                    "title":"Locality",
+                    "type": ["string", "null"],
+                    "description": "The locality. For example, Mountain View.",
                     "mergeStrategy": "ocdsVersion"
                 },
                 "region": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "description": "La región. Por ejemplo: CA.",
+                    "title":"Region",
+                    "type": ["string", "null"],
+                    "description":"The region. For example, CA.",
                     "mergeStrategy": "ocdsVersion"
                 },
                 "postalCode": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "description": "El código postal. Por ejemplo: 94043",
+                    "title":"Postalcode",
+                    "type": ["string", "null"],
+                    "description":"The postal code. For example, 94043.",
                     "mergeStrategy": "ocdsVersion"
                 },
                 "countryName": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "description": "El nombre del país. Por ejemplo: Estados Unidos.",
+                    "title":"Country name",
+                    "type": ["string", "null"],
+                    "description":"The country name. For example, United States.",
                     "mergeStrategy": "ocdsVersion"
                 }
             },
             "patternProperties": {
                 "^(countryName_(((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+)))$": {
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "type": ["string", "null"]
                 }
             }
         },
         "ContactPoint": {
+            "title":"Contact point",
             "type": "object",
-            "description": "Una persona, punto de contacto o departamento de contacto en relación a este proceso de contratación.",
+            "description": "An person, contact point or department to contact in relation to this contracting process.",
             "properties": {
                 "name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "description": "El nombre de la persona de contacto, departamento o punto de contacto en relación a este proceso de contratación.",
+                    "title":"Name",
+                    "type": ["string", "null"],
+                    "description":"The name of the contact person, department, or contact point, for correspondence relating to this contracting process.",
                     "mergeStrategy": "ocdsVersion"
                 },
-                "email": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "description": "La dirección de correo del punto o persona de contacto.",
+                "email":{
+                    "title":"Email",
+                    "type": ["string", "null"],
+                    "description":"The e-mail address of the contact point/person.",
                     "mergeStrategy": "ocdsVersion"
                 },
                 "telephone": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "description": "El número de teléfono del punto o persona de contacto. Este debe de incluir el código de marcación internacional.",
+                    "title":"Telephone",
+                    "type": ["string", "null"],
+                    "description":"The telephone number of the contact point/person. This should include the international dialling code.",
                     "mergeStrategy": "ocdsVersion"
                 },
                 "faxNumber": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "description": "El número de fax del punto o persona de contacto. Este debe de incluir el código de marcación internacional.",
+                    "title":"Fax number",
+                    "type": ["string", "null"],
+                    "description":"The fax number of the contact point/person. This should include the international dialling code.",
                     "mergeStrategy": "ocdsVersion"
                 },
                 "url": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "description": "Una dirección web para el punto o persona de contacto.",
+                    "title":"URL",
+                    "type": ["string", "null"],
+                    "description":"A web address for the contact point/person.",
                     "format": "uri",
                     "mergeStrategy": "ocdsVersion"
                 }
             },
             "patternProperties": {
                 "^(name_(((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+)))$": {
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "type": ["string", "null"]
                 }
             }
         },
         "Value": {
+            "title":"Value",
             "type": "object",
             "properties": {
                 "amount": {
-                    "description": "Monto como una cifra.",
-                    "type": [
-                        "number",
-                        "null"
-                    ],
+                    "title":"Amount",
+                    "description": "Amount as a number.",
+                    "type": ["number", "null"],
                     "minimum": 0,
                     "mergeStrategy": "ocdsVersion"
                 },
                 "currency": {
-                    "description": "La divisa en formato de 3 letras ISO 4217.",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title":"Currency",
+                    "description": "The currency in 3-letter ISO 4217 format.",
+                    "type": ["string", "null"],
                     "mergeStrategy": "ocdsVersion"
                 }
             }
         },
         "Period": {
+            "title":"Period",
             "type": "object",
-            "title": "Periodo",
             "properties": {
-                "startDate": {
-                    "description": "La fecha de inicio para el periodo.",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                "startDate": { 
+                    "title":"Start date",
+                    "description": "The start date for the period.",
+                    "type": ["string", "null"],
                     "format": "date-time",
                     "mergeStrategy": "ocdsVersion"
                 },
                 "endDate": {
-                    "description": "La fecha de fin del periodo",
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "title":"End date",
+                    "description": "The end date for the period.",
+                    "type": ["string", "null"],
                     "format": "date-time",
                     "mergeStrategy": "ocdsVersion"
                 }

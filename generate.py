@@ -102,7 +102,10 @@ def display_properties(schema,path='',section=''):
         if 'items' in obj[field]:
             if 'properties' in obj[field]['items']:                
                 if 'title' in obj[field]['items']:
-                    rows.append({'section':section,'path':path + field,'title':obj[field]['items']['title'],'description':obj[field]['items']['description']})
+                    if 'description' in obj[field]['items']:
+                        rows.append({'section':section,'path':path + field,'title':obj[field]['items']['title'],'description':obj[field]['items']['description']})
+                    else:
+                        rows.append({'section':section,'path':path + field,'title':obj[field]['items']['title'],'description':""})
                 else:
                     pass
                    # rows.append({'section':section,'path':path + field,'title':'missing','description':'missing'})
