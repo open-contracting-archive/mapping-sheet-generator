@@ -48,6 +48,10 @@ def display_properties(schema,path='',section=''):
         section = row['path'].split("/")[0] if "/" in row['path'] else ""
             
         row['section'] = section
+
+        # If there was a reference here, prefer the values from that
+        if hasattr(obj[field], '__reference__'):
+            obj[field].update(obj[field].__reference__)
         
         row['title'] = obj[field]['title'] if 'title' in obj[field] else field + "*"
             
