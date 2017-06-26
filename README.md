@@ -1,3 +1,5 @@
+*This is an OCDS Labs script: no guarantees as to the stability or operation of the script are provided*
+
 # JSON Schema Mapping Spreadsheet Generator
 
 This script will generate a spreadsheet that includes all possible field paths represented in an OCDS schema. 
