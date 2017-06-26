@@ -1,6 +1,16 @@
 # JSON Schema Mapping Spreadsheet Generator
 
-This script is a work in progress, developed to create a spreadsheet that can support mapping between the OCDS structure and data in existing systems.
+This script will generate a spreadsheet that includes all possible field paths represented in an OCDS schema. 
+
+To do this it will:
+
+* Resolve all references in the schema;
+* Make sure descriptions from the parent object containing a reference are maintained;
+* Check for deprecation information
+
+This version of the script can be run with the URL to a schema provided as the first parameter, or without, in which case it will look for a file named release-schema.json in the same folder.
+
+The output is written to fields.csv
 
 
 ## Installation
