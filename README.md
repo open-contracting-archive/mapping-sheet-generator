@@ -23,3 +23,8 @@ source .ve/bin/activate
 pip install -r requirements.txt
 ```
 
+## Usage
+
+```
+python generate.py http://standard.open-contracting.org/latest/en/release-schema.json
+```
