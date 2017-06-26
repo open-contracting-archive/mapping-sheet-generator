@@ -38,12 +38,12 @@ def display_links(links):
     return ", ".join(link_list)
     
 
-def display_properties(schema,path='',section=''):
+def display_properties(schema,path='',section='',deprecated=''):
     obj = schema['properties']
     required_fields = schema['required'] if 'required' in schema else []
     rows = []
     for field  in obj:
-        row = {'path':path + field}
+        row = {'path':path + field, 'deprecated':deprecated}
         
         section = row['path'].split("/")[0] if "/" in row['path'] else ""
             
@@ -98,10 +98,15 @@ def display_properties(schema,path='',section=''):
         else:
             row['values'] = ""
         
+        ## Check for deprecation
+        if 'deprecated' in obj[field]:
+            row['deprecated'] = obj[field]['deprecated'].get('deprecatedVersion','')
+            row['deprecationNotes'] = obj[field]['deprecated'].get('description','')
+
         rows.append(row)
         
         if 'properties' in obj[field]:
-            rows = rows + display_properties(obj[field],path + field + "/",section)
+            rows = rows + display_properties(obj[field],path + field + "/",section,row['deprecated'])
         
         if 'items' in obj[field]:
             if 'properties' in obj[field]['items']:                
@@ -114,14 +119,15 @@ def display_properties(schema,path='',section=''):
                     pass
                    # rows.append({'section':section,'path':path + field,'title':'missing','description':'missing'})
                     
-                rows = rows + display_properties(obj[field]['items'],path + field + "/",section)
+                rows = rows + display_properties(obj[field]['items'],path + field + "/",section,row['deprecated'])
   
     return rows
 
 schema = display_properties(release)
 
 f = open('fields.csv','wt')
-w = csv.DictWriter(f,['section','path','title','description','type','range','values','links'])
+w = csv.DictWriter(f,['section','path','title','description','type','range','values','links','deprecated','deprecationNotes'])
+w.writeheader()
 w.writerows(schema)
 f.close()
 
