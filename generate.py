@@ -9,9 +9,18 @@ import json
 import collections
 import jsonref
 from jsonref import JsonRef
+import requests
+import sys
 
-with open('release-schema.json', 'r') as f:
-    release = json.loads(f.read(),object_pairs_hook=collections.OrderedDict)
+
+try:
+    r = requests.get(sys.argv[1])
+    release = r.json()
+    print("Fetched schema from URL")
+except:
+    print("Using local release schema")
+    with open('release-schema.json', 'r') as f:
+        release = json.loads(f.read(),object_pairs_hook=collections.OrderedDict)
 
 release = JsonRef.replace_refs(release)
 
@@ -112,9 +121,9 @@ def display_properties(schema,path='',section='',deprecated=''):
             if 'properties' in obj[field]['items']:                
                 if 'title' in obj[field]['items']:
                     if 'description' in obj[field]['items']:
-                        rows.append({'section':section,'path':path + field,'title':obj[field]['items']['title'],'description':obj[field]['items']['description']})
+                        rows.append({'section':section,'path':path + field,'title':obj[field]['items']['title'],'description':obj[field]['items']['description'],'type':obj[field]['items']['type']})
                     else:
-                        rows.append({'section':section,'path':path + field,'title':obj[field]['items']['title'],'description':""})
+                        rows.append({'section':section,'path':path + field,'title':obj[field]['items']['title'],'description':"",'type':obj[field]['items']['type']})
                 else:
                     pass
                    # rows.append({'section':section,'path':path + field,'title':'missing','description':'missing'})
