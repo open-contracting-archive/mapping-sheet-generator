@@ -11,6 +11,7 @@ import jsonref
 from jsonref import JsonRef
 import requests
 import sys
+import copy
 
 
 try:
@@ -48,10 +49,13 @@ def display_links(links):
     
 
 def display_properties(schema,path='',section='',deprecated=''):
-    obj = schema['properties']
+    # Create a copy of obj, because there may be references to it from
+    # elsewhere in the JSON schema, and we don't want to mutate it in
+    # all those places
+    obj = copy.deepcopy(schema['properties'])
     required_fields = schema['required'] if 'required' in schema else []
     rows = []
-    for field  in obj:
+    for field in obj:
         row = {'path':path + field, 'deprecated':deprecated}
         
         section = row['path'].split("/")[0] if "/" in row['path'] else ""
