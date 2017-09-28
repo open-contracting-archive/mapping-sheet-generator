@@ -1,8 +1,8 @@
-*This is an OCDS Labs script: no guarantees as to the stability or operation of the script are provided*
-
 # JSON Schema Mapping Spreadsheet Generator
 
-This script will generate a spreadsheet that includes all possible field paths represented in an OCDS schema. 
+*This is an OCDS Labs script: no guarantees as to the stability or operation of the script are provided.*
+
+This script will generate a spreadsheet that includes all possible field paths represented in an OCDS schema.
 
 To do this it will:
 
@@ -14,10 +14,9 @@ This version of the script can be run with the URL to a schema provided as the f
 
 The output is written to fields.csv
 
-
 ## Installation
 
-```
+```shell
 virtualenv .ve --python=/usr/local/bin/python3.4
 source .ve/bin/activate
 pip install -r requirements.txt
@@ -25,6 +24,6 @@ pip install -r requirements.txt
 
 ## Usage
 
-```
+```shell
 python generate.py http://standard.open-contracting.org/latest/en/release-schema.json
 ```
