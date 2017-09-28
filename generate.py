@@ -104,7 +104,7 @@ def display_properties(schema, path='', section='', deprecated=''):
         minn = '1' if required else '0'
         row['range'] = minn + ".." + maxn
 
-        ## Format or restrictions
+        # Format or restrictions
         if 'format' in obj[field]:
             row['values'] = obj[field]['format']
         elif 'enum' in obj[field]:
@@ -129,13 +129,17 @@ def display_properties(schema, path='', section='', deprecated=''):
                 if 'title' in obj[field]['items']:
                     if 'description' in obj[field]['items']:
                         rows.append({'section': section, 'path': path + field,
-                                     'title': obj[field]['items']['title'], 'description': obj[field]['items']['description'], 'type': obj[field]['items']['type']})
+                                     'title': obj[field]['items']['title'],
+                                     'description': obj[field]['items']['description'],
+                                     'type': obj[field]['items']['type']})
                     else:
                         rows.append({'section': section, 'path': path + field,
-                                     'title': obj[field]['items']['title'], 'description': "", 'type': obj[field]['items']['type']})
+                                     'title': obj[field]['items']['title'],
+                                     'description': "",
+                                     'type': obj[field]['items']['type']})
                 else:
                     pass
-                   # rows.append({'section':section,'path':path + field,'title':'missing','description':'missing'})
+                    # rows.append({'section':section,'path':path + field,'title':'missing','description':'missing'})
 
                 rows = rows + display_properties(obj[field]['items'], path + field + "/", section, row['deprecated'])
 
