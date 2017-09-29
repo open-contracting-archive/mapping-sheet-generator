@@ -1,8 +1,3 @@
-# ToDO
-# Update section = first part of path
-# Add field type information
-# Add valid values information
-
 import re
 import csv
 import json
