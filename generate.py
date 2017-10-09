@@ -6,8 +6,6 @@ import jsonref
 from jsonref import JsonRef
 import requests
 import sys
-import copy
-
 
 try:
     r = requests.get(sys.argv[1])
@@ -18,10 +16,10 @@ except:
     with open('release-schema.json', 'r') as f:
         release = json.loads(f.read(), object_pairs_hook=collections.OrderedDict)
 
+r = release
 release = JsonRef.replace_refs(release)
-
+release2 = release
 print(jsonref.dumps(release, indent=3))
-
 
 # Based on https://stackoverflow.com/questions/30734682/extracting-url-and-anchor-text-from-markdown-using-python
 INLINE_LINK_RE = re.compile(r'\[([^\]]+)\]\(([^)]+)\)')
@@ -50,7 +48,8 @@ def display_properties(schema, path='', section='', deprecated=''):
     # Create a copy of obj, because there may be references to it from
     # elsewhere in the JSON schema, and we don't want to mutate it in
     # all those places
-    obj = copy.deepcopy(schema['properties'])
+    #   obj = copy.deepcopy(schema['properties'])
+    obj = schema['properties']
     required_fields = schema['required'] if 'required' in schema else []
     rows = []
     for field in obj:
@@ -62,8 +61,15 @@ def display_properties(schema, path='', section='', deprecated=''):
 
         # If there was a reference here, prefer the values from that
         if hasattr(obj[field], '__reference__'):
-            obj[field].update(obj[field].__reference__)
-
+            if row['path'] == 'buyer':
+                obj[field] = r['properties']['buyer']
+            elif row['path'] == 'tender/procuringEntity' or row['path'] == 'tender/tenderers' \
+                    or row['path'] == 'awards/suppliers':
+                obj[field] = release2['properties']['tender']['properties'][field].__reference__
+            elif row['path'] == 'awards/suppliers':
+                obj[field] = release2['properties']['award']['properties'][field].__reference__
+            else:
+                obj[field].update(obj[field].__reference__)
         row['title'] = obj[field]['title'] if 'title' in obj[field] else field + "*"
 
         if 'description' in obj[field]:
