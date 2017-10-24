@@ -61,10 +61,7 @@ def display_properties(schema, path='', section='', deprecated=''):
 
         # If there was a reference here, prefer the values from that
         if hasattr(obj[field], '__reference__'):
-            if row['path'] == 'buyer':
-                obj[field] = r['properties']['buyer']
-            elif row['path'] == 'tender/procuringEntity' or row['path'] == 'tender/tenderers' \
-                    or row['path'] == 'awards/suppliers':
+            if row['path'] == 'tender/tenderers':
                 obj[field] = release2['properties']['tender']['properties'][field].__reference__
             elif row['path'] == 'awards/suppliers':
                 obj[field] = release2['properties']['award']['properties'][field].__reference__
@@ -148,7 +145,10 @@ def display_properties(schema, path='', section='', deprecated=''):
 
 
 schema = display_properties(release)
-
+for row in schema:
+    if (row['path'] == 'tender/tenderers' or row['path'] == 'awards/suppliers') and row['type'] == 'object':
+        row['title'] = r['definitions']['OrganizationReference']['title']
+        row['description'] = r['definitions']['OrganizationReference']['description']
 f = open('fields.csv', 'wt')
 w = csv.DictWriter(f, ['section', 'path', 'title', 'description', 'type',
                        'range', 'values', 'links', 'deprecated', 'deprecationNotes'])
